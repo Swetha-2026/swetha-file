@@ -1,37 +1,304 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Internship Verification System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --indigo: #4f46e5;
+            --violet: #7c3aed;
+            --emerald: #10b981;
+            --teal: #0d9488;
+            --ink: #1e1b3a;
+            --muted: #6b6885;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: var(--ink);
+            background: linear-gradient(135deg, #4338ca 0%, #6d28d9 45%, #0d9488 100%);
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient glow shapes */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.55;
+        }
+        body::before {
+            width: 420px;
+            height: 420px;
+            background: #34d399;
+            top: -120px;
+            left: -120px;
+        }
+        body::after {
+            width: 380px;
+            height: 380px;
+            background: #818cf8;
+            bottom: -140px;
+            right: -100px;
+        }
+
+        .page-wrap {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+
+        .shield-badge {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--emerald), var(--teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.45);
+        }
+        .shield-badge i {
+            font-size: 26px;
+            color: #ffffff;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 26px;
+            line-height: 1.3;
+            text-align: center;
+            color: #ffffff;
+            margin: 0 0 6px;
+            letter-spacing: -0.3px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin: 0 0 32px;
+            font-weight: 500;
+        }
+
+        /* Glassmorphism card */
+        .card {
+            background: rgba(255, 255, 255, 0.97);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 22px;
+            padding: 40px 36px;
+            box-shadow:
+                0 30px 60px -15px rgba(30, 27, 58, 0.45),
+                0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+        }
+
+        .field {
+            margin-bottom: 22px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 8px;
+            letter-spacing: 0.2px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-wrap i.field-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a3a0c0;
+            font-size: 15px;
+            pointer-events: none;
+            transition: color 0.2s ease;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 13px 16px 13px 44px;
+            border: 1.5px solid #e3e1f0;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14.5px;
+            color: var(--ink);
+            background-color: #f9f9fd;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            outline: none;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6885' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 18px;
+            cursor: pointer;
+        }
+
+        input::placeholder { color: #b3b0c9; }
+
+        input:focus,
+        select:focus {
+            border-color: var(--indigo);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.14);
+        }
+
+        input:focus + i.field-icon,
+        .input-wrap:focus-within i.field-icon {
+            color: var(--indigo);
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 13px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15.5px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--indigo), var(--violet) 55%, var(--teal));
+            background-size: 160% 160%;
+            background-position: 0% 50%;
+            box-shadow: 0 12px 28px -6px rgba(79, 70, 229, 0.55);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-position 0.4s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px) scale(1.015);
+            box-shadow: 0 16px 34px -6px rgba(124, 58, 237, 0.55);
+            background-position: 100% 50%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0) scale(0.99);
+        }
+
+        .submit-btn i { font-size: 15px; }
+
+        @media (max-width: 480px) {
+            .card { padding: 30px 22px; border-radius: 18px; }
+            h1 { font-size: 21px; }
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Internship Verification and Risk Assessment System</h1>
+    <div class="page-wrap">
+        <div class="badge-row">
+            <div class="shield-badge"><i class="bi bi-shield-check"></i></div>
+        </div>
 
-    <form action="/check" method="POST">
-        <label>Company Name:</label><br>
-        <input type="text" name="company_name" required><br><br>
+        <h1>Internship Verification and Risk Assessment System</h1>
+        <p class="subtitle">Check a listing's legitimacy before you apply or pay anything</p>
 
-        <label>Company Website:</label><br>
-        <input type="text" name="website" required><br><br>
+        <div class="card">
+            <form action="/check" method="POST">
 
-        <label>HR Email:</label><br>
-        <input type="email" name="email" required><br><br>
+                <div class="field">
+                    <label for="company_name">Company Name</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-building field-icon"></i>
+                        <input type="text" id="company_name" name="company_name" placeholder="e.g. Acme Technologies Pvt Ltd" required>
+                    </div>
+                </div>
 
-        <label>LinkedIn Page Available?</label><br>
-        <select name="linkedin">
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-        </select><br><br>
+                <div class="field">
+                    <label for="website">Company Website</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-globe2 field-icon"></i>
+                        <input type="text" id="website" name="website" placeholder="e.g. www.acmetech.com" required>
+                    </div>
+                </div>
 
-        <label>Does the internship ask for a registration fee?</label><br>
-        <select name="fee">
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-        </select><br><br>
+                <div class="field">
+                    <label for="email">HR Email</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-envelope field-icon"></i>
+                        <input type="email" id="email" name="email" placeholder="e.g. hr@acmetech.com" required>
+                    </div>
+                </div>
 
-        <button type="submit">Check Internship</button>
-    </form>
+                <div class="field">
+                    <label for="linkedin">LinkedIn Page Available?</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-linkedin field-icon"></i>
+                        <select id="linkedin" name="linkedin">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
 
+                <div class="field">
+                    <label for="fee">Does the internship ask for a registration fee?</label>
+                    <div class="input-wrap">
+                        <i class="bi bi-cash-coin field-icon"></i>
+                        <select id="fee" name="fee">
+                            <option value="No">No</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Check Internship
+                    <i class="bi bi-search"></i>
+                </button>
+
+            </form>
+        </div>
+    </div>
 </body>
 </html>
