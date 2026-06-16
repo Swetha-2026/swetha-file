@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Internship Verification Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>Internship Verification Report</h1>
+
+    <p><b>Company Name:</b> {{ company }}</p>
+    <p><b>Website:</b> {{ website }}</p>
+    <p><b>HR Email:</b> {{ email }}</p>
+    <p><b>LinkedIn Available:</b> {{ linkedin }}</p>
+    <p><b>Registration Fee:</b> {{ fee }}</p>
+
+    <h2>Risk Score: {{ score }}/100</h2>
+    <h2>Result: {{ result }}</h2>
+
+    <hr>
+
+    
+
+<h3>Recommendation</h3>
+<ul>
+    {% if linkedin == "No" %}
+        <li>No LinkedIn company page found.</li>
+    {% endif %}
+
+    {% if fee == "Yes" %}
+        <li>The internship asks for a registration fee.</li>
+    {% endif %}
+
+    {% if linkedin == "Yes" and fee == "No" %}
+        <li>Basic verification checks look good. You can still verify directly with the company.</li>
+    {% endif %}
+</ul>
+<hr>
+
+<p>
+    <b>Disclaimer:</b> This tool provides a preliminary risk assessment based on user inputs and common verification indicators. It does not conclusively determine whether an internship or company is genuine or fraudulent.
+</p>
+
+<br>
+
+<a href="/">
+    <button>Check Another Internship</button>
+</a>
+
+</body>
+</html>
